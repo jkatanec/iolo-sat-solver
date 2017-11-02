@@ -1,10 +1,10 @@
-
 def dimacs_write(output_file, valuation):
     file = open(output_file, 'w')
-    if valuation.isempty():
+    if len(valuation) == 0:
         file.write("0")
         return 0
-    # TODO: valuation
+    for value in valuation:
+        file.write('%d ' % value)
     return 0
 
 
@@ -34,7 +34,7 @@ def dimacs_read(input_file):
                 repeat = False
                 if variables is None or clauses is None:
                     raise FormatError("problem line not defined.")
-                variables, clauses, index, ends = clause_read(line, clause_index, variables, clauses, index)
+                index, ends = clause_read(line, clause_index, variables, clauses, index)
                 # one clause can be spread through several lines
                 if ends:
                     clause_index += 1
@@ -50,14 +50,14 @@ def clause_read(line, clause_index, variables, clauses, index):
         if i > len(line):
             break
         if num == 0:
-            return variables, clauses, i, True
+            return i, True
         if num < 0:
             variables[-num - 1][1].append(clause_index)
             clauses[clause_index][1].append(-num)
         else:
             variables[num-1][0].append(clause_index)
             clauses[clause_index][0].append(num)
-    return variables, clauses, i, False
+    return i, False
 
 
 def check_symbol(line, i):
