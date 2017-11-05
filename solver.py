@@ -1,8 +1,10 @@
-import interfacing
-from copy import *
-import numpy as np
 import sys
+from copy import *
 from multiprocessing import Pool
+
+import numpy as np
+
+import interfacing
 
 
 def simplify(clauses, variables, var, negation, usables):
@@ -87,7 +89,7 @@ def choose_literal(variables, clauses, valuation, usables, depth):
     else:
         with Pool() as p:
             results = p.imap_unordered(test_chosen_literal, [(variables, clauses, valuation, usables, i % 2 == 0, depth,
-                                                              int(np.floor(i/2))) for i in range(2 * len(usables))])
+                                                              int(np.floor(i / 2))) for i in range(2 * len(usables))])
             k = 0
             while k <= len(usables):
                 k += 1
@@ -138,6 +140,7 @@ def call_initial_solver(input_file, output_file):
             usables[1].append(clause)
     valuation = solve(variables, clauses, valuation, usables, 0)
     interfacing.dimacs_write(output_file, valuation)
+
 
 if __name__ == "__main__":
     call_initial_solver(sys.argv[1], sys.argv[2])
